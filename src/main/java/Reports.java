@@ -14,7 +14,7 @@ public class Reports {
     public static Map<Long, String> threadToExtentTestMap = new HashMap<Long, String>();
     public static Map<String, ExtentTest> nameToTestMap = new HashMap<String, ExtentTest>();
 
-    private synchronized static ExtentReports getExtentReport() {
+    protected synchronized static ExtentReports getExtentReport() {
         if (reporter == null) {
             // you can get the file name and other parameters here from a
             // config file or global variables
