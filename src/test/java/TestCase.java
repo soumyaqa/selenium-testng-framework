@@ -15,7 +15,7 @@ public class TestCase extends BaseTest {
     }
     @Test
     public void test002() {
-        long startTime = System.nanoTime();
+
         ExtentTest testReporter = Reports.getTest();
         testReporter.log(LogStatus.INFO, "second test case");
     }
