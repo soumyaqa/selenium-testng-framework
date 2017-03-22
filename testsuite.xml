@@ -1,8 +1,13 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="SuiteName" parallel="methods">
+<suite name="SuiteName" parallel="classes" thread-count="10">
+    <listeners>
+        <listener
+                class-name="Listener"></listener>
+    </listeners>
     <test name="TestName" allow-return-values="true" >
         <classes>
-            <class name="TestCase" />
+            <class name="ChromeTest" />
+            <class name="IETest"/>
         </classes>
     </test>
 </suite>
