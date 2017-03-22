@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 
 /*
  * This is a base Test class. All testng tests needs to inherited from
@@ -16,6 +17,8 @@ public class BaseTest {
     private String testName;
     private String testDescription;
 
+    @BeforeSuite
+public void beforeSuite(){Reports.getExtentReport();}
     @BeforeMethod
     public void beforeMethod(Method caller) {
         //TODO : Get the test name & description from Excelsheet and pass it to the getTest method
