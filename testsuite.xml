@@ -7,7 +7,7 @@
     <test name="TestName" allow-return-values="true" >
         <classes>
             <class name="ChromeTest" />
-            <class name="IETest"/>
+            <!--<class name="IETest"/>-->
         </classes>
     </test>
 </suite>
