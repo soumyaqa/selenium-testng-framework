@@ -192,7 +192,7 @@ public class BaseTest {
         } catch (WebDriverException | IOException e) {
             e.printStackTrace();
         }
-        testReporter.log(status, expected, actual + testReporter.addScreenCapture("./../reports/images/" + number + ".jpg"));
+        testReporter.log(status, expected, actual + testReporter.addScreenCapture("../reports/images/" + number + ".jpg"));
     }
 
     public boolean waitForElement(By by) {
