@@ -14,6 +14,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 
 import java.io.File;
@@ -164,13 +165,13 @@ public class BaseTest {
         driver.quit();
     }
 
-/*    @AfterSuite
+    @AfterSuite
     public void endReport() throws InterruptedException {
         if (Reports.report != null) {
             Reports.report.flush();
             Reports.report.close();
         }
-    }*/
+    }
 
     public void logStep(LogStatus status, String expected, String actual) {
         testReporter.log(status, expected, actual);
