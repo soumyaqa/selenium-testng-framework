@@ -27,6 +27,7 @@ dependencies {
 }
 
 test {
+    systemProperties System.properties
     useTestNG() {
         suites './testsuite.xml'
     }
