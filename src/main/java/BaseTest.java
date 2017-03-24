@@ -192,7 +192,11 @@ public class BaseTest {
         } catch (WebDriverException | IOException e) {
             e.printStackTrace();
         }
-        testReporter.log(status, expected, actual + testReporter.addScreenCapture("../reports/images/" + number + ".jpg"));
+
+        // File file = new File("/reports/images/" + number + ".jpg");
+        String dirPath = System.getProperty("user.dir") + File.separator + "reports" + File.separator + number + ".jpg";
+        System.out.println(dirPath);
+        testReporter.log(status, expected, actual + testReporter.addScreenCapture(dirPath));
     }
 
     public boolean waitForElement(By by) {
