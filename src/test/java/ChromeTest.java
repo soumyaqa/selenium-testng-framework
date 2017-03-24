@@ -13,6 +13,7 @@ public class ChromeTest  extends BaseTest{
         driver = new ChromeDriver();
         driver.get("http://www.google.com");
         driver.manage().window().maximize();
-        testReporter.log(LogStatus.PASS,"Naviagted to Google.com in Chrome");
+      //  testReporter.log(,"Naviagted to Google.com in Chrome");
+        logStepWithScreenShot(LogStatus.PASS,"Navigate to Google", "Successfully Navigated to Google");
     }
 }

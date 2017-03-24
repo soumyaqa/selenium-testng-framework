@@ -14,6 +14,7 @@ public class Listener implements IExecutionListener {
     }
 
     public void onExecutionStart() {
+        Utils.deleteDirectory("./reports");
         Reports.report = new ExtentReports("./reports/ExecutionReport.html", true, DisplayOrder.OLDEST_FIRST);
     }
 }
