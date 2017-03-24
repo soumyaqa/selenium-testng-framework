@@ -193,10 +193,9 @@ public class BaseTest {
             e.printStackTrace();
         }
 
-        // File file = new File("/reports/images/" + number + ".jpg");
-        String dirPath = System.getProperty("user.dir") + File.separator + "reports" + File.separator + number + ".jpg";
-        System.out.println(dirPath);
-        testReporter.log(status, expected, actual + testReporter.addScreenCapture(dirPath));
+        testReporter.log(status, expected, actual + testReporter.addScreenCapture("." + File.separator + ".." + File.separator + "reports" + File.separator + "images" + File.separator + number + ".jpg"));
+
+
     }
 
     public boolean waitForElement(By by) {
