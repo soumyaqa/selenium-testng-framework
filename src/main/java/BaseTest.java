@@ -39,12 +39,13 @@ public class BaseTest {
     protected WebDriver driver;
     protected ExtentTest testReporter;
     protected Properties configProperties;
-    protected Map<String,String> jenkinsProperties;
+    protected Map<String, String> jenkinsProperties;
     private String testName;
     private String testDescription;
     private String runMode;
     private String browserName;
     private String platform;
+    private boolean isJenkinsRun = false;
 
     public BaseTest() {
         //load configs
@@ -67,13 +68,17 @@ public class BaseTest {
             if(key.contains("jenkins"))
                 jenkinsProperties.put(key,systemProperties.getProperty(key));
         }*/
-        for (String key : systemProperties.stringPropertyNames()){
-            if(key.contains("run.mode"))
+        for (String key : systemProperties.stringPropertyNames()) {
+            if (key.contains("run.mode")) {
                 runMode = systemProperties.getProperty(key);
-            else if(key.contains("browserName"))
+                isJenkinsRun = true;
+            } else if (key.contains("browserName")) {
                 browserName = systemProperties.getProperty(key);
-            else if(key.contains("platform"))
+                isJenkinsRun = true;
+            } else if (key.contains("platform")) {
                 platform = systemProperties.getProperty(key);
+                isJenkinsRun = true;
+            }
         }
         //initialize drivers
         if (runMode.equalsIgnoreCase("local")) {
@@ -166,10 +171,12 @@ public class BaseTest {
     }
 
     @AfterSuite
-    public void endReport() throws InterruptedException {
-        if (Reports.report != null) {
-            Reports.report.flush();
-            Reports.report.close();
+    public void endReport() {
+        if (!isJenkinsRun) {
+            if (Reports.report != null) {
+                Reports.report.flush();
+                Reports.report.close();
+            }
         }
     }
 
