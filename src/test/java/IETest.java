@@ -2,6 +2,7 @@ import com.relevantcodes.extentreports.LogStatus;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -15,11 +16,12 @@ public class IETest extends BaseTest{
     public void testIE(){
 
         StringBuilder driverPath = new StringBuilder();
-
+        DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
+        capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
         File ieDriverPath = new File("./drivers/IEDriverServer.exe");
         System.setProperty("webdriver.ie.driver", ieDriverPath.getAbsolutePath());
         System.setProperty("ie.ensureCleanSession", "true");
-        driver = new InternetExplorerDriver();
+        driver = new InternetExplorerDriver(capabilities);
 
         driver.get("http://www.facebook.com");
         driver.manage().window().maximize();
