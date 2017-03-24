@@ -158,6 +158,7 @@ public class BaseTest {
     @AfterMethod
     public void afterMethod(Method caller) {
         Reports.report.endTest(testReporter);
+
     }
 
     @AfterClass
@@ -166,7 +167,8 @@ public class BaseTest {
     }
 
     @AfterSuite
-    public void endReport() {
+    public void endReport() throws InterruptedException {
+        Thread.sleep(2000);
         if (Reports.report != null) {
             Reports.report.flush();
             Reports.report.close();
