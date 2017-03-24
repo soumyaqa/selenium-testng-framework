@@ -15,7 +15,6 @@ public class IETest extends BaseTest{
     @Test
     public void testIE(){
 
-        StringBuilder driverPath = new StringBuilder();
         DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
         capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
         File ieDriverPath = new File("./drivers/IEDriverServer.exe");
@@ -25,7 +24,8 @@ public class IETest extends BaseTest{
 
         driver.get("http://www.facebook.com");
         driver.manage().window().maximize();
-        System.out.println(waitForElement(By.id("email")));
+        logStep(LogStatus.PASS,"",String.valueOf(waitForElement(By.id("email"))));
+      //  System.out.println(waitForElement(By.id("email")));
         logStepWithScreenShot(LogStatus.PASS,"Navigate to Facebook", "Successfully Navigated to Facebook");
     }
 }
