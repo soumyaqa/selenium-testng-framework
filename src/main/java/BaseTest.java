@@ -14,7 +14,6 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 
 import java.io.File;
@@ -24,7 +23,6 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -37,12 +35,12 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * this class. It contains common reporting infra
  */
 public class BaseTest {
-    private String testName;
-    private String testDescription;
     protected WebDriver driver;
     protected ExtentTest testReporter;
     protected Properties configProperties;
     protected Map<String,String> jenkinsProperties;
+    private String testName;
+    private String testDescription;
     private String runMode;
     private String browserName;
     private String platform;
@@ -166,14 +164,13 @@ public class BaseTest {
         driver.quit();
     }
 
-    @AfterSuite
+/*    @AfterSuite
     public void endReport() throws InterruptedException {
-        Thread.sleep(2000);
         if (Reports.report != null) {
             Reports.report.flush();
             Reports.report.close();
         }
-    }
+    }*/
 
     public void logStep(LogStatus status, String expected, String actual) {
         testReporter.log(status, expected, actual);
