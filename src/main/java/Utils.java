@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Properties;
 
 /**
  * Created by GXP8655 on 3/23/2017.
@@ -28,6 +29,8 @@ public class Utils {
             e.printStackTrace();
             System.out.println("Fatal Error while deleting reports folder");
         }
+
+
     }
 
 }

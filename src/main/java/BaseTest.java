@@ -16,8 +16,11 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -32,6 +35,39 @@ public class BaseTest {
     private String testDescription;
     protected WebDriver driver;
     protected ExtentTest testReporter;
+    protected Properties configProperties;
+
+    public BaseTest() {
+        //load configs
+        configProperties = new Properties();
+        //InputStream in = getClass().getResourceAsStream("/config.properties");
+        //InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties");
+
+        try {
+            InputStream in = new FileInputStream("./config.properties");
+            configProperties.load(in);
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error loading config.properties");
+        }
+
+        //initialize drivers
+        if (configProperties.getProperty("run.mode").equalsIgnoreCase("local")) {
+            if (configProperties.getProperty("capabilities.source").equalsIgnoreCase("config")) {
+                if (configProperties.getProperty("capabilities.browser").equalsIgnoreCase("IE") || configProperties.getProperty("capabilities.browser").equalsIgnoreCase("INTERNET EXPLORER"))
+                    driver = new DriverManager().getLocalIEDriver();
+                else if (configProperties.getProperty("capabilities.browser").equalsIgnoreCase("CHROME"))
+                    driver = new DriverManager().getLocalChromeDriver();
+                else {
+                    System.out.println("invalid browser config. Provide either IE or Chrome");
+                    System.exit(1);
+                }
+                //write else for excel configs
+            }
+            //add else for remote execution
+        }
+    }
 
     @BeforeMethod
     public void beforeMethod(Method caller) {
@@ -96,5 +132,8 @@ public class BaseTest {
             return false;
         }
         return true;
+    }
+    protected String getConfigProperty(String key){
+        return configProperties.getProperty(key);
     }
 }
