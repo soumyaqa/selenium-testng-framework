@@ -8,6 +8,8 @@ import com.relevantcodes.extentreports.ExtentTest;
 import com.relevantcodes.extentreports.LogStatus;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.testng.annotations.AfterClass;
@@ -20,6 +22,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -53,19 +57,68 @@ public class BaseTest {
         }
 
         //initialize drivers
-        if (configProperties.getProperty("run.mode").equalsIgnoreCase("local")) {
-            if (configProperties.getProperty("capabilities.source").equalsIgnoreCase("config")) {
-                if (configProperties.getProperty("capabilities.browser").equalsIgnoreCase("IE") || configProperties.getProperty("capabilities.browser").equalsIgnoreCase("INTERNET EXPLORER"))
+        if (getConfigProperty("run.mode").equalsIgnoreCase("local")) {
+            if (getConfigProperty("capabilities.source").equalsIgnoreCase("config")) {
+                // Reports.report.addSystemInfo("Browser", getConfigProperty("capabilities.browser"));
+                if (getConfigProperty("browserName").equalsIgnoreCase("IE") || getConfigProperty("browserName").equalsIgnoreCase("INTERNET EXPLORER"))
                     driver = new DriverManager().getLocalIEDriver();
-                else if (configProperties.getProperty("capabilities.browser").equalsIgnoreCase("CHROME"))
+                else if (getConfigProperty("browserName").equalsIgnoreCase("CHROME"))
                     driver = new DriverManager().getLocalChromeDriver();
                 else {
                     System.out.println("invalid browser config. Provide either IE or Chrome");
                     System.exit(1);
                 }
-                //write else for excel configs
+
             }
-            //add else for remote execution
+            //write else for excel configs
+
+        }
+        //add else for remote execution
+        //Reports.report.addSystemInfo("Browser", "Multi-Browser");
+        else if (getConfigProperty("run.mode").equalsIgnoreCase("remote")) {
+            URL remoteURL = null;
+            DesiredCapabilities capabilities = null;
+
+            if (getConfigProperty("capabilities.source").equalsIgnoreCase("config")) {
+                // Reports.report.addSystemInfo("Browser", getConfigProperty("capabilities.browser"));
+                if (getConfigProperty("browserName").equalsIgnoreCase("IE") || getConfigProperty("browserName").equalsIgnoreCase("INTERNET EXPLORER")) {
+                    capabilities = DesiredCapabilities.internetExplorer();
+                    capabilities.setCapability("ignoreProtectedModeSettings", true);
+                    capabilities.setCapability("ensureCleanSession", true);
+
+                    try {
+                        Runtime.getRuntime().exec("RunDll32.exe InetCpl.cpl,ClearMyTracksByProcess 2");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.out.println("Error getting local IE driver instance");
+                    }
+                } else if (getConfigProperty("browserName").equalsIgnoreCase("CHROME"))
+                    capabilities = DesiredCapabilities.chrome();
+                else {
+                    System.out.println("invalid browser config. Provide either IE or Chrome");
+                    System.exit(1);
+                }
+            }
+            //write else for excel configs
+
+            switch (getConfigProperty("platform").toUpperCase()) {
+                case "WINDOWS":
+                    capabilities.setPlatform(Platform.WINDOWS);
+                    break;
+                case "LINUX":
+                    capabilities.setPlatform(Platform.LINUX);
+                    break;
+                default:
+                    capabilities.setPlatform(Platform.ANY);
+            }
+            try {
+                remoteURL = new URL(getConfigProperty("grid.url"));
+                driver = new RemoteWebDriver(remoteURL, capabilities);
+                driver.manage().window().maximize();
+                driver.manage().timeouts().implicitlyWait(60L, TimeUnit.SECONDS);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -79,6 +132,7 @@ public class BaseTest {
             Reports.report = new ExtentReports("./reports/ExecutionReport.html", true, DisplayOrder.OLDEST_FIRST);
         }
         testReporter = Reports.report.startTest(testName, testDescription);
+
     }
 
     @AfterMethod
@@ -133,7 +187,8 @@ public class BaseTest {
         }
         return true;
     }
-    protected String getConfigProperty(String key){
+
+    protected String getConfigProperty(String key) {
         return configProperties.getProperty(key);
     }
 }
