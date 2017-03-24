@@ -193,7 +193,7 @@ public class BaseTest {
             e.printStackTrace();
         }
 
-        testReporter.log(status, expected, actual + testReporter.addScreenCapture("." + File.separator + ".." + File.separator + "reports" + File.separator + "images" + File.separator + number + ".jpg"));
+        testReporter.log(status, expected, actual + testReporter.addScreenCapture("./images/" + number + ".jpg"));
 
 
     }
