@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -40,13 +42,14 @@ public class BaseTest {
     protected WebDriver driver;
     protected ExtentTest testReporter;
     protected Properties configProperties;
+    protected Map<String,String> jenkinsProperties;
+    private String runMode;
+    private String browserName;
+    private String platform;
 
     public BaseTest() {
         //load configs
         configProperties = new Properties();
-        //InputStream in = getClass().getResourceAsStream("/config.properties");
-        //InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties");
-
         try {
             InputStream in = new FileInputStream("./config.properties");
             configProperties.load(in);
@@ -55,14 +58,31 @@ public class BaseTest {
             e.printStackTrace();
             System.out.println("Error loading config.properties");
         }
-
+        runMode = getConfigProperty("run.mode");
+        browserName = getConfigProperty("browserName");
+        platform = getConfigProperty("platform");
+        //Override with Jenkins properties
+        Properties systemProperties = System.getProperties();
+/*        for (String key : systemProperties.stringPropertyNames())
+        {
+            if(key.contains("jenkins"))
+                jenkinsProperties.put(key,systemProperties.getProperty(key));
+        }*/
+        for (String key : systemProperties.stringPropertyNames()){
+            if(key.contains("run.mode"))
+                runMode = systemProperties.getProperty(key);
+            else if(key.contains("browserName"))
+                browserName = systemProperties.getProperty(key);
+            else if(key.contains("platform"))
+                platform = systemProperties.getProperty(key);
+        }
         //initialize drivers
-        if (getConfigProperty("run.mode").equalsIgnoreCase("local")) {
+        if (runMode.equalsIgnoreCase("local")) {
             if (getConfigProperty("capabilities.source").equalsIgnoreCase("config")) {
                 // Reports.report.addSystemInfo("Browser", getConfigProperty("capabilities.browser"));
-                if (getConfigProperty("browserName").equalsIgnoreCase("IE") || getConfigProperty("browserName").equalsIgnoreCase("INTERNET EXPLORER"))
+                if (browserName.equalsIgnoreCase("IE") || browserName.equalsIgnoreCase("INTERNET EXPLORER"))
                     driver = new DriverManager().getLocalIEDriver();
-                else if (getConfigProperty("browserName").equalsIgnoreCase("CHROME"))
+                else if (browserName.equalsIgnoreCase("CHROME"))
                     driver = new DriverManager().getLocalChromeDriver();
                 else {
                     System.out.println("invalid browser config. Provide either IE or Chrome");
@@ -75,13 +95,13 @@ public class BaseTest {
         }
         //add else for remote execution
         //Reports.report.addSystemInfo("Browser", "Multi-Browser");
-        else if (getConfigProperty("run.mode").equalsIgnoreCase("remote")) {
+        else if (runMode.equalsIgnoreCase("remote")) {
             URL remoteURL = null;
             DesiredCapabilities capabilities = null;
 
             if (getConfigProperty("capabilities.source").equalsIgnoreCase("config")) {
                 // Reports.report.addSystemInfo("Browser", getConfigProperty("capabilities.browser"));
-                if (getConfigProperty("browserName").equalsIgnoreCase("IE") || getConfigProperty("browserName").equalsIgnoreCase("INTERNET EXPLORER")) {
+                if (browserName.equalsIgnoreCase("IE") || browserName.equalsIgnoreCase("INTERNET EXPLORER")) {
                     capabilities = DesiredCapabilities.internetExplorer();
                     capabilities.setCapability("ignoreProtectedModeSettings", true);
                     capabilities.setCapability("ensureCleanSession", true);
@@ -92,7 +112,7 @@ public class BaseTest {
                         e.printStackTrace();
                         System.out.println("Error getting local IE driver instance");
                     }
-                } else if (getConfigProperty("browserName").equalsIgnoreCase("CHROME"))
+                } else if (browserName.equalsIgnoreCase("CHROME"))
                     capabilities = DesiredCapabilities.chrome();
                 else {
                     System.out.println("invalid browser config. Provide either IE or Chrome");
@@ -101,7 +121,7 @@ public class BaseTest {
             }
             //write else for excel configs
 
-            switch (getConfigProperty("platform").toUpperCase()) {
+            switch (platform.toUpperCase()) {
                 case "WINDOWS":
                     capabilities.setPlatform(Platform.WINDOWS);
                     break;
