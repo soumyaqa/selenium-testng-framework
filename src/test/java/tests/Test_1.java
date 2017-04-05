@@ -1,11 +1,14 @@
+package tests;
+
 import com.relevantcodes.extentreports.LogStatus;
+import framework.BaseTest;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.Test;
 
 /**
  * Created by GXP8655 on 3/22/2017.
  */
-public class Test_1 extends BaseTest{
+public class Test_1 extends BaseTest {
 
     @Test
     public void testGoogle() {

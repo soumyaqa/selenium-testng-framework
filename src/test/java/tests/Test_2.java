@@ -1,4 +1,7 @@
+package tests;
+
 import com.relevantcodes.extentreports.LogStatus;
+import framework.BaseTest;
 import org.testng.annotations.Test;
 
 /**

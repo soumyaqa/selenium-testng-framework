@@ -28,9 +28,6 @@ dependencies {
 
 test {
     systemProperties System.properties
-    println("***********Hello**********")
-    println(systemProperties)
-    println("***********Hello**********")
     useTestNG() {
         suites './testsuite.xml'
     }

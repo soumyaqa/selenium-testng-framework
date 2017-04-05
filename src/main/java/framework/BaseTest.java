@@ -1,4 +1,4 @@
-/**
+package framework; /**
  * Created by GXP8655 on 3/20/2017.
  */
 
@@ -8,14 +8,13 @@ import com.relevantcodes.extentreports.ExtentTest;
 import com.relevantcodes.extentreports.LogStatus;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,6 +36,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  */
 public class BaseTest {
     protected WebDriver driver;
+    protected static ExtentReports report;
     protected ExtentTest testReporter;
     protected Properties configProperties;
     protected Map<String, String> jenkinsProperties;
@@ -83,11 +83,11 @@ public class BaseTest {
         //initialize drivers
         if (runMode.equalsIgnoreCase("local")) {
             if (getConfigProperty("capabilities.source").equalsIgnoreCase("config")) {
-                // Reports.report.addSystemInfo("Browser", getConfigProperty("capabilities.browser"));
+                //report.addSystemInfo("Browser", getConfigProperty("capabilities.browser"));
                 if (browserName.equalsIgnoreCase("IE") || browserName.equalsIgnoreCase("INTERNET EXPLORER"))
-                    driver = new DriverManager().getLocalIEDriver();
+                    getLocalIEDriver();
                 else if (browserName.equalsIgnoreCase("CHROME"))
-                    driver = new DriverManager().getLocalChromeDriver();
+                    getLocalChromeDriver();
                 else {
                     System.out.println("invalid browser config. Provide either IE or Chrome");
                     System.exit(1);
@@ -98,13 +98,13 @@ public class BaseTest {
 
         }
         //add else for remote execution
-        //Reports.report.addSystemInfo("Browser", "Multi-Browser");
+        //report.addSystemInfo("Browser", "Multi-Browser");
         else if (runMode.equalsIgnoreCase("remote")) {
             URL remoteURL = null;
             DesiredCapabilities capabilities = null;
 
             if (getConfigProperty("capabilities.source").equalsIgnoreCase("config")) {
-                // Reports.report.addSystemInfo("Browser", getConfigProperty("capabilities.browser"));
+                // report.addSystemInfo("Browser", getConfigProperty("capabilities.browser"));
                 if (browserName.equalsIgnoreCase("IE") || browserName.equalsIgnoreCase("INTERNET EXPLORER")) {
                     capabilities = DesiredCapabilities.internetExplorer();
                     capabilities.setCapability("ignoreProtectedModeSettings", true);
@@ -139,7 +139,7 @@ public class BaseTest {
                 remoteURL = new URL(getConfigProperty("grid.url"));
                 driver = new RemoteWebDriver(remoteURL, capabilities);
                 driver.manage().window().maximize();
-                driver.manage().timeouts().implicitlyWait(60L, TimeUnit.SECONDS);
+                driver.manage().timeouts().implicitlyWait(100L, TimeUnit.SECONDS);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -151,31 +151,36 @@ public class BaseTest {
         //TODO : Get the test name & description from Excelsheet and pass it to the getTest method
         testName = caller.getName();
         testDescription = "This is a simple test case description";
-        if (Reports.report == null) {
+        if (report == null) {
             Utils.deleteDirectory("./reports");
-            Reports.report = new ExtentReports("./reports/ExecutionReport.html", true, DisplayOrder.OLDEST_FIRST);
+            report = new ExtentReports("./reports/ExecutionReport.html", true, DisplayOrder.OLDEST_FIRST);
         }
-        testReporter = Reports.report.startTest(testName, testDescription);
-
+        testReporter = report.startTest(testName, testDescription);
     }
 
     @AfterMethod
     public void afterMethod(Method caller) {
-        Reports.report.endTest(testReporter);
-
+        report.endTest(testReporter);
     }
 
     @AfterClass
     public void quit() {
-        driver.quit();
+        if (driver != null)
+            driver.quit();
+    }
+
+    @BeforeSuite
+    public void initReport() {
+        Utils.deleteDirectory("./reports");
+        BaseTest.report = new ExtentReports("./reports/ExecutionReport.html", true, DisplayOrder.OLDEST_FIRST);
     }
 
     @AfterSuite
     public void endReport() {
         if (!isJenkinsRun) {
-            if (Reports.report != null) {
-                Reports.report.flush();
-                Reports.report.close();
+            if (report != null) {
+                report.flush();
+                report.close();
             }
         }
     }
@@ -194,8 +199,30 @@ public class BaseTest {
         }
 
         testReporter.log(status, expected, actual + testReporter.addScreenCapture("./images/" + number + ".jpg"));
+    }
 
+    public void getLocalChromeDriver() {
+        System.setProperty("webdriver.chrome.driver", "./drivers/chromedriver.exe");
+        driver = new ChromeDriver();
+        driver.manage().timeouts().implicitlyWait(10L, TimeUnit.SECONDS);
+    }
 
+    public void getLocalIEDriver() {
+        File ieDriverPath = new File("./drivers/IEDriverServer.exe");
+        System.setProperty("webdriver.ie.driver", ieDriverPath.getAbsolutePath());
+        DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
+        capabilities.setCapability("ignoreProtectedModeSettings", true);
+        capabilities.setCapability("ensureCleanSession", true);
+        driver = new InternetExplorerDriver(capabilities);
+/*        driver.manage().deleteAllCookies();
+        try {
+            Runtime.getRuntime().exec("RunDll32.exe InetCpl.cpl,ClearMyTracksByProcess 2");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error getting local IE driver instance");
+        }*/
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(100L, TimeUnit.SECONDS);
     }
 
     public boolean waitForElement(By by) {
