@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -39,7 +38,7 @@ public class BaseTest {
     protected static ExtentReports report;
     protected ExtentTest testReporter;
     protected Properties configProperties;
-    protected Map<String, String> jenkinsProperties;
+    //protected Map<String, String> jenkinsProperties;
     private String testName;
     private String testDescription;
     private String runMode;
@@ -48,102 +47,15 @@ public class BaseTest {
     private boolean isJenkinsRun = false;
 
     public BaseTest() {
-        //load configs
-        configProperties = new Properties();
-        try {
-            InputStream in = new FileInputStream("./config.properties");
-            configProperties.load(in);
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Error loading config.properties");
-        }
-        runMode = getConfigProperty("run.mode");
-        browserName = getConfigProperty("browserName");
-        platform = getConfigProperty("platform");
-        //Override with Jenkins properties
-        Properties systemProperties = System.getProperties();
-/*        for (String key : systemProperties.stringPropertyNames())
-        {
-            if(key.contains("jenkins"))
-                jenkinsProperties.put(key,systemProperties.getProperty(key));
-        }*/
-        for (String key : systemProperties.stringPropertyNames()) {
-            if (key.contains("run.mode")) {
-                runMode = systemProperties.getProperty(key);
-                isJenkinsRun = true;
-            } else if (key.contains("browserName")) {
-                browserName = systemProperties.getProperty(key);
-                isJenkinsRun = true;
-            } else if (key.contains("platform")) {
-                platform = systemProperties.getProperty(key);
-                isJenkinsRun = true;
-            }
-        }
+        loadConfig();
+        setRunConfigs();
         //initialize drivers
-        if (runMode.equalsIgnoreCase("local")) {
-            if (getConfigProperty("capabilities.source").equalsIgnoreCase("config")) {
-                //report.addSystemInfo("Browser", getConfigProperty("capabilities.browser"));
-                if (browserName.equalsIgnoreCase("IE") || browserName.equalsIgnoreCase("INTERNET EXPLORER"))
-                    getLocalIEDriver();
-                else if (browserName.equalsIgnoreCase("CHROME"))
-                    getLocalChromeDriver();
-                else {
-                    System.out.println("invalid browser config. Provide either IE or Chrome");
-                    System.exit(1);
-                }
-
-            }
-            //write else for excel configs
-
-        }
-        //add else for remote execution
-        //report.addSystemInfo("Browser", "Multi-Browser");
-        else if (runMode.equalsIgnoreCase("remote")) {
-            URL remoteURL = null;
-            DesiredCapabilities capabilities = null;
-
-            if (getConfigProperty("capabilities.source").equalsIgnoreCase("config")) {
-                // report.addSystemInfo("Browser", getConfigProperty("capabilities.browser"));
-                if (browserName.equalsIgnoreCase("IE") || browserName.equalsIgnoreCase("INTERNET EXPLORER")) {
-                    capabilities = DesiredCapabilities.internetExplorer();
-                    capabilities.setCapability("ignoreProtectedModeSettings", true);
-                    capabilities.setCapability("ensureCleanSession", true);
-
-                    try {
-                        Runtime.getRuntime().exec("RunDll32.exe InetCpl.cpl,ClearMyTracksByProcess 2");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        System.out.println("Error getting local IE driver instance");
-                    }
-                } else if (browserName.equalsIgnoreCase("CHROME"))
-                    capabilities = DesiredCapabilities.chrome();
-                else {
-                    System.out.println("invalid browser config. Provide either IE or Chrome");
-                    System.exit(1);
-                }
-            }
-            //write else for excel configs
-
-            switch (platform.toUpperCase()) {
-                case "WINDOWS":
-                    capabilities.setPlatform(Platform.WINDOWS);
-                    break;
-                case "LINUX":
-                    capabilities.setPlatform(Platform.LINUX);
-                    break;
-                default:
-                    capabilities.setPlatform(Platform.ANY);
-            }
-            try {
-                remoteURL = new URL(getConfigProperty("grid.url"));
-                driver = new RemoteWebDriver(remoteURL, capabilities);
-                driver.manage().window().maximize();
-                driver.manage().timeouts().implicitlyWait(100L, TimeUnit.SECONDS);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-        }
+        if (runMode.equalsIgnoreCase("local"))
+            getLocalDriver();
+            //add else for remote execution
+            //report.addSystemInfo("Browser", "Multi-Browser");
+        else if (runMode.equalsIgnoreCase("remote"))
+            getRemoteDriver();
     }
 
     @BeforeMethod
@@ -177,11 +89,10 @@ public class BaseTest {
 
     @AfterSuite
     public void endReport() {
-        if (!isJenkinsRun) {
-            if (report != null) {
-                report.flush();
-                report.close();
-            }
+
+        if (report != null) {
+            report.flush();
+            report.close();
         }
     }
 
@@ -247,5 +158,105 @@ public class BaseTest {
 
     protected String getConfigProperty(String key) {
         return configProperties.getProperty(key);
+    }
+
+    protected void loadConfig() {
+        //load configs
+        configProperties = new Properties();
+        try {
+            InputStream in = new FileInputStream("./config.properties");
+            configProperties.load(in);
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error loading config.properties");
+        }
+    }
+
+    public void getLocalDriver() {
+        if (getConfigProperty("capabilities.source").equalsIgnoreCase("config")) {
+            //report.addSystemInfo("Browser", getConfigProperty("capabilities.browser"));
+            if (browserName.equalsIgnoreCase("IE") || browserName.equalsIgnoreCase("INTERNET EXPLORER"))
+                getLocalIEDriver();
+            else if (browserName.equalsIgnoreCase("CHROME"))
+                getLocalChromeDriver();
+            else {
+                System.out.println("invalid browser config. Provide either IE or Chrome");
+                System.exit(1);
+            }
+
+        }
+        //write else for excel configs
+    }
+
+    public void getRemoteDriver() {
+        URL remoteURL = null;
+        DesiredCapabilities capabilities = null;
+
+        if (getConfigProperty("capabilities.source").equalsIgnoreCase("config")) {
+            // report.addSystemInfo("Browser", getConfigProperty("capabilities.browser"));
+            if (browserName.equalsIgnoreCase("IE") || browserName.equalsIgnoreCase("INTERNET EXPLORER")) {
+                capabilities = DesiredCapabilities.internetExplorer();
+                capabilities.setCapability("ignoreProtectedModeSettings", true);
+                capabilities.setCapability("ensureCleanSession", true);
+
+                try {
+                    Runtime.getRuntime().exec("RunDll32.exe InetCpl.cpl,ClearMyTracksByProcess 2");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.out.println("Error getting local IE driver instance");
+                }
+            } else if (browserName.equalsIgnoreCase("CHROME"))
+                capabilities = DesiredCapabilities.chrome();
+            else {
+                System.out.println("invalid browser config. Provide either IE or Chrome");
+                System.exit(1);
+            }
+        }
+        //write else for excel configs
+
+        switch (platform.toUpperCase()) {
+            case "WINDOWS":
+                capabilities.setPlatform(Platform.WINDOWS);
+                break;
+            case "LINUX":
+                capabilities.setPlatform(Platform.LINUX);
+                break;
+            default:
+                capabilities.setPlatform(Platform.ANY);
+        }
+        try {
+            remoteURL = new URL(getConfigProperty("grid.url"));
+            driver = new RemoteWebDriver(remoteURL, capabilities);
+            driver.manage().window().maximize();
+            driver.manage().timeouts().implicitlyWait(100L, TimeUnit.SECONDS);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setRunConfigs() {
+        runMode = getConfigProperty("run.mode");
+        browserName = getConfigProperty("browserName");
+        platform = getConfigProperty("platform");
+        //Override with Jenkins properties
+        Properties systemProperties = System.getProperties();
+/*        for (String key : systemProperties.stringPropertyNames())
+        {
+            if(key.contains("jenkins"))
+                jenkinsProperties.put(key,systemProperties.getProperty(key));
+        }*/
+        for (String key : systemProperties.stringPropertyNames()) {
+            if (key.contains("run.mode")) {
+                runMode = systemProperties.getProperty(key);
+                isJenkinsRun = true;
+            } else if (key.contains("browserName")) {
+                browserName = systemProperties.getProperty(key);
+                isJenkinsRun = true;
+            } else if (key.contains("platform")) {
+                platform = systemProperties.getProperty(key);
+                isJenkinsRun = true;
+            }
+        }
     }
 }
