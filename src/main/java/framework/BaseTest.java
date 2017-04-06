@@ -12,8 +12,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
+import org.testng.Assert;
 import org.testng.annotations.*;
 
 import java.io.File;
@@ -25,9 +24,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 /*
  * This is a base Test class. All testng tests needs to inherited from
@@ -45,6 +41,7 @@ public class BaseTest {
     private String browserName;
     private String platform;
     private boolean isJenkinsRun = false;
+    protected Element element;
 
     public BaseTest() {
         loadConfig();
@@ -56,6 +53,7 @@ public class BaseTest {
             //report.addSystemInfo("Browser", "Multi-Browser");
         else if (runMode.equalsIgnoreCase("remote"))
             getRemoteDriver();
+        element = new Element(driver);
     }
 
     @BeforeMethod
@@ -112,6 +110,17 @@ public class BaseTest {
         testReporter.log(status, expected, actual + testReporter.addScreenCapture("./images/" + number + ".jpg"));
     }
 
+    public void openApplication(String appURL) {
+        try {
+            driver.get(appURL);
+            driver.manage().window().maximize();
+            logStepWithScreenShot(LogStatus.PASS, "Navigate to "+appURL, "Successfully navigated to "+appURL);
+        } catch (Exception e) {
+            logStepWithScreenShot(LogStatus.FAIL, "Navigate to "+appURL, "Failed to navigated to "+appURL);
+            Assert.fail();
+        }
+    }
+
     public void getLocalChromeDriver() {
         System.setProperty("webdriver.chrome.driver", "./drivers/chromedriver.exe");
         driver = new ChromeDriver();
@@ -136,25 +145,6 @@ public class BaseTest {
         driver.manage().timeouts().implicitlyWait(100L, TimeUnit.SECONDS);
     }
 
-    public boolean waitForElement(By by) {
-        boolean isElementPresent = false;
-        try {
-            Wait<WebDriver> wait = new FluentWait<WebDriver>(driver)
-                    .withTimeout(30, SECONDS)
-                    .pollingEvery(50, TimeUnit.MILLISECONDS)
-                    .ignoring(WebDriverException.class, java.util.NoSuchElementException.class);
-            //WebElement found = wait.until((arg0)->{return driver.findElement(by);});
-
-            WebElement foo = wait.until(new Function<WebDriver, WebElement>() {
-                public WebElement apply(WebDriver driver) {
-                    return driver.findElement(by);
-                }
-            });
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
 
     protected String getConfigProperty(String key) {
         return configProperties.getProperty(key);
