@@ -1,6 +1,7 @@
 package pages;
 
 import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
 import framework.BasePage;
 import framework.Element;
 import org.openqa.selenium.WebDriver;
@@ -14,11 +15,12 @@ public class AdactinHomePage extends BasePage {
         super(driver, report, element);
     }
 
-    public AdactinHomePage Login(String username, String pasword) {
+    public AdactinSearchPage login(String username, String pasword) {
         element.enterText(AdactinLoginPageUI.userName, username);
         element.enterText(AdactinLoginPageUI.passWord, pasword);
         element.click(AdactinLoginPageUI.login);
-        return new AdactinHomePage(driver, report, element);
+        logStepWithScreenShot(LogStatus.PASS, "Login Test", "Successfully Logged into the Adactin Website");
+        return new AdactinSearchPage(driver, report, element);
     }
 }
 
