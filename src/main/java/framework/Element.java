@@ -226,15 +226,9 @@ public class Element {
      ***************************************************************************************************************/
     //TODO : Check getText for all UI elements like button, textbox, etc -- It may not work as expected
     public String getText(By by) {
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        String text = driver.findElement(by).getText();
-        if (text == null)
-                text = driver.findElement(by).getAttribute("value");
-            return text;
+        if(waitForElement(by))
+            return driver.findElement(by).getAttribute("value");
+        return null;
     }
 
     public boolean containsText(By by, String searchText) {
