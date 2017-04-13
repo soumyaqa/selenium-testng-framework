@@ -43,6 +43,7 @@ public class Element {
 
     public boolean enterText(By by, String text) {
         if (waitForElement(by)) {
+            driver.findElement(by).clear();
             driver.findElement(by).sendKeys(text);
             return true;
         }
@@ -225,13 +226,15 @@ public class Element {
      ***************************************************************************************************************/
     //TODO : Check getText for all UI elements like button, textbox, etc -- It may not work as expected
     public String getText(By by) {
-        if (waitForElement(by)) {
-            String text = driver.findElement(by).getText();
-            if (text == null || text.equalsIgnoreCase(""))
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        String text = driver.findElement(by).getText();
+        if (text == null)
                 text = driver.findElement(by).getAttribute("value");
             return text;
-        }
-        return "";
     }
 
     public boolean containsText(By by, String searchText) {
