@@ -9,7 +9,6 @@ import org.openqa.selenium.support.ui.Wait;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -226,7 +225,7 @@ public class Element {
      ***************************************************************************************************************/
     //TODO : Check getText for all UI elements like button, textbox, etc -- It may not work as expected
     public String getText(By by) {
-        if(waitForElement(by))
+        if (waitForElement(by))
             return driver.findElement(by).getAttribute("value");
         return null;
     }
@@ -242,19 +241,13 @@ public class Element {
     }
 
     public boolean waitForElement(By by) {
-        boolean isElementPresent = false;
         try {
             Wait<WebDriver> wait = new FluentWait<WebDriver>(driver)
                     .withTimeout(30, SECONDS)
                     .pollingEvery(50, TimeUnit.MILLISECONDS)
                     .ignoring(WebDriverException.class, java.util.NoSuchElementException.class);
-            //WebElement found = wait.until((arg0)->{return driver.findElement(by);});
+            wait.until((arg0) -> driver.findElement(by));
 
-            WebElement foo = wait.until(new Function<WebDriver, WebElement>() {
-                public WebElement apply(WebDriver driver) {
-                    return driver.findElement(by);
-                }
-            });
         } catch (Exception e) {
             return false;
         }
