@@ -2,8 +2,20 @@
 <suite name="SuiteName" parallel="classes" thread-count="10">
     <test name="TestName" allow-return-values="true" >
         <classes>
-            <class name="tests.Test_1" />
-            <class name="tests.Test_2"/>
+            <!--  <class name="tests.Test_02_SearchHotel"/>
+              <class name="tests.Test_03_SelectHotel" />
+              <class name="tests.Test_04_BookHotel"/>
+              <class name="tests.Test_05_ViewBookedHotels"/>-->
+
+            <class name="tests.TC_01_VerifyAdactinLogin"/>
+            <class name="tests.TC_02_VerifyCheckinDate"/>
+            <class name="tests.TC_04_VerifyLocationSelected"/>
+            <class name="tests.TC_05_VerifyDates"/>
+            <class name="tests.TC_06_VerifyRoomCount"/>
+            <class name="tests.TC_07_VerifyRoomType"/>
+            <class name="tests.TC_11_VerifyBookingDetails"/>
+
+
         </classes>
     </test>
 </suite>

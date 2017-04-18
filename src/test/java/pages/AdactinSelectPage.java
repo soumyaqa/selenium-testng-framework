@@ -5,7 +5,7 @@ import com.relevantcodes.extentreports.LogStatus;
 import framework.BasePage;
 import framework.Element;
 import org.openqa.selenium.WebDriver;
-import uistore.SearchPageUI;
+import org.testng.Assert;
 import uistore.SelectHotelPageUI;
 
 /**
@@ -23,22 +23,53 @@ public class AdactinSelectPage extends BasePage {
         return new AdactinBookPage(driver, report, element);
     }
 
-    public AdactinSelectPage verifySelectHotel() {
-        String name1 = element.getText(SearchPageUI.hotels);
-        String name2 = element.getText(SelectHotelPageUI.hotelLocationVerification);
-
-/*         //if (element.containsText(SearchPageUI.hotels. )!= (element.containsText(SelectHotelPageUI.hotelNameVerification)))
-        if(name1== name2){
-            //System.out.print(element.getText(SearchPageUI.locations));
-            System.out.print(element.getText(SelectHotelPageUI.hotelLocationVerification));
-        logStepWithScreenShot(LogStatus.PASS, "Hotel Name Should be Same", "Hotel Name Displayed in the Select Page is Same as Selected in Search Page");}
+    public AdactinSelectPage verifySelectHotel(String hotel) {
+        String selectedHotel = element.getText(SelectHotelPageUI.hotelLocationVerification);
+        if (selectedHotel.equalsIgnoreCase(hotel))
+            logStepWithScreenShot(LogStatus.PASS, "Hotel Name Should be Same", "Hotel Name Displayed in the Select Page is Same as Selected in Search Page");
 
         else {
-            logStepWithScreenShot(LogStatus.PASS, "Hotel Name Should be Same", "Hotel Name Displayed in the Select Page is Not Same as Selected in Search Page");
-            System.out.print(element.getText(SelectHotelPageUI.hotelLocationVerification));
-        }*/
+
+            logStepWithScreenShot(LogStatus.FAIL, "Hotel Name Should be Same", "Hotel Name Displayed in the Select Page is Not Same as Selected in Search Page");
+            Assert.fail("Hotel displayed does not match the input provided");
+
+        }
         return this;
     }
 
+    public AdactinSelectPage verifyDates(String checkInDate, String checkOutDate) {
+        String arrivalDate, depatureDate;
+        arrivalDate = element.getText(SelectHotelPageUI.arrivalDate);
+        depatureDate = element.getText(SelectHotelPageUI.depatureDate);
+        if (arrivalDate.equalsIgnoreCase(checkInDate) && depatureDate.equalsIgnoreCase(checkOutDate))
+            logStepWithScreenShot(LogStatus.PASS, "Arrival and Depature Date Should be Same", "Dates Displayed Match With the Entered Date");
+        else {
+            logStepWithScreenShot(LogStatus.FAIL, "Arrival and Depature Date Should be Same", "Dates Not Matchd With Test Data");
+
+        }
+        return this;
+    }
+
+    public AdactinSelectPage verifyRoomCount(String noofRoomsSelected) {
+        String roomCount = element.getText(SelectHotelPageUI.noofRoomsSelected);
+        if (roomCount.equalsIgnoreCase(noofRoomsSelected))
+            logStepWithScreenShot(LogStatus.PASS, "Room Count Should be Same", "Room Count Matched with Test Data");
+        else {
+            logStepWithScreenShot(LogStatus.FAIL, "Room Count Should be Same", "Room Count Not Matched with Test Data");
+
+        }
+        return this;
+    }
+
+    public AdactinSelectPage verifyRoomType(String roomTypeSelected) {
+        String roomType = element.getText(SelectHotelPageUI.roomType);
+        if (roomType.equalsIgnoreCase(roomTypeSelected))
+            logStepWithScreenShot(LogStatus.PASS, "Room Type Should be Same", "Room Type Matched with Test Data");
+        else {
+            logStepWithScreenShot(LogStatus.FAIL, "Room Type Should be Same", "Room Type Not Matched with Test Data");
+
+        }
+        return this;
+    }
 
 }

@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 /**
  * Created by GXP8655 on 3/22/2017.
  */
-public class Test_2 extends BaseTest {
+public class Test2 extends BaseTest {
 
     @Test
     public void testFacebook() {

@@ -7,7 +7,7 @@ import pages.AdactinHomePage;
 /**
  * Created by Udhayakumar on 4/12/2017.
  */
-public class TC_02_CheckinDate extends BaseTest {
+public class TC_02_VerifyCheckinDate extends BaseTest {
     AdactinHomePage loginPage;
 
     @Test

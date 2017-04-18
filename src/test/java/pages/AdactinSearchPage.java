@@ -16,8 +16,7 @@ public class AdactinSearchPage extends BasePage {
         super(driver, report, element);
     }
 
-    public AdactinSelectPage searchPage(String location, String hotels, String roomType,
-                                        String children) {
+    public AdactinSelectPage searchPage(String location, String hotels, String roomType, String noofRooms, String arrivalDate, String depatureDate, String adult, String children) {
 /*
             element.enterText(SearchPageUI.userName, username);
             element.enterText(SearchPageUI.passWord, password);
@@ -25,6 +24,10 @@ public class AdactinSearchPage extends BasePage {
         element.selectTextByValue(SearchPageUI.locations, location);
         element.selectByText(SearchPageUI.hotels, hotels);
         element.selectByText(SearchPageUI.roomType, roomType);
+        element.selectByText(SearchPageUI.noOfRooms, noofRooms);
+        element.enterText(SearchPageUI.chechInDate, arrivalDate);
+        element.enterText(SearchPageUI.checkOutDate, depatureDate);
+        element.selectByText(SearchPageUI.adults, adult);
         element.selectByText(SearchPageUI.children, children);
         element.click(SearchPageUI.search);
         element.wait(3);

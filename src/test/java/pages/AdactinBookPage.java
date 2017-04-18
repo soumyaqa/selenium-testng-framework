@@ -31,4 +31,24 @@ public class AdactinBookPage extends BasePage {
         logStepWithScreenShot(LogStatus.PASS, "Hotel Booking", "Hotel Booked Successfully");
         return new AdactinBookingConfirmationPage(driver, report, element);
     }
+
+    public AdactinBookingConfirmationPage verifyBookingDetails(String hotelName, String location, String roomType, String totalDay, String pricePerNight) {
+        String hotelNameDisplayed, locationDisplayed, roomTypeDisplayed, totalDayDisplayed, pricePerNightDisplayed;
+        hotelNameDisplayed = element.getText(BookHotelPageUI.hotelName);
+        locationDisplayed = element.getText(BookHotelPageUI.location);
+        roomTypeDisplayed = element.getText(BookHotelPageUI.roomType);
+        totalDayDisplayed = element.getText(BookHotelPageUI.totalDays);
+        pricePerNightDisplayed = element.getText(BookHotelPageUI.pricePerNight);
+        if (hotelNameDisplayed.equalsIgnoreCase(hotelName) && locationDisplayed.equalsIgnoreCase(location) && roomTypeDisplayed.equalsIgnoreCase(roomType) && totalDayDisplayed.equalsIgnoreCase(totalDay) && pricePerNightDisplayed.equalsIgnoreCase(pricePerNight))
+            logStepWithScreenShot(LogStatus.PASS, "Details Match with Selected hotel data", "Both the Details are Same");
+        else
+            logStepWithScreenShot(LogStatus.FAIL, "Details Match with Selected hotel data", "Both the Details are Not Same");
+
+        return new AdactinBookingConfirmationPage(driver, report, element);
+    }
+
+    public AdactinBookPage verifyTotalPrice(String totalPrice) {
+        String totalPriceCalculated = element.getText();
+        return this;
+    }
 }
