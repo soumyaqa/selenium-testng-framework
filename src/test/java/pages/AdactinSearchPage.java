@@ -51,9 +51,22 @@ public class AdactinSearchPage extends BasePage {
         element.selectByText(SearchPageUI.children, children);
         element.click(SearchPageUI.search);
         logStepWithScreenShot(LogStatus.PASS, "Check-In Date Verification", "Check-In Date Shall Before than Check-Out Date");
-        //element.getText(SearchPageUI.chechInError);
         return this;
     }
 
+    public AdactinSearchPage chechOutDateError(String location, String hotels, String roomType, String noOfRooms,
+                                               String chechINDate, String checkOUTDate, String adults, String children) {
+        element.selectTextByValue(SearchPageUI.locations, location);
+        element.selectByText(SearchPageUI.hotels, hotels);
+        element.selectByText(SearchPageUI.roomType, roomType);
+        element.selectByText(SearchPageUI.noOfRooms, noOfRooms);
+        element.enterText(SearchPageUI.chechInDate, chechINDate);
+        element.enterText(SearchPageUI.checkOutDate, checkOUTDate);
+        element.selectByText(SearchPageUI.adults, adults);
+        element.selectByText(SearchPageUI.children, children);
+        element.click(SearchPageUI.search);
+        logStepWithScreenShot(LogStatus.PASS, "Error Message Should be Displayed", "Check-In Date should be either Today or Later Date");
+        return this;
+    }
 
 }

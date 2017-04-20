@@ -16,7 +16,7 @@ public class TC_04_VerifyLocationSelected extends BaseTest {
         loginPage = new AdactinHomePage(driver, testReporter, element);
         openApplication("http://www.adactin.com/HotelApp/");
         loginPage.login(user, "root1234")
-                .searchPage("Sydney", "Hotel Creek", "Standard", "1 - One", "17/04/2017", "18/04/2017", "1 - One", "1 - One")
+                .searchPage("Sydney", "Hotel Creek", "Standard", "1 - One", "17/05/2017", "18/05/2017", "1 - One", "1 - One")
                 .verifySelectHotel("Sydney");
 
 

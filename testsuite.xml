@@ -9,10 +9,14 @@
 
             <class name="tests.TC_01_VerifyAdactinLogin"/>
             <class name="tests.TC_02_VerifyCheckinDate"/>
+            <class name="tests.TC_03_VerifyDateError"/>
             <class name="tests.TC_04_VerifyLocationSelected"/>
             <class name="tests.TC_05_VerifyDates"/>
             <class name="tests.TC_06_VerifyRoomCount"/>
             <class name="tests.TC_07_VerifyRoomType"/>
+            <class name="tests.TC_08_VerifyTotalPrice"/>
+            <class name="tests.TC_09_VerifyAdactinLogout"/>
+            <class name="tests.TC_10_VerifyFinalBillWithGST"/>
             <class name="tests.TC_11_VerifyBookingDetails"/>
 
 

@@ -5,6 +5,7 @@ import com.relevantcodes.extentreports.LogStatus;
 import framework.BasePage;
 import framework.Element;
 import org.openqa.selenium.WebDriver;
+import uistore.BookHotelPageUI;
 import uistore.ViewBookingPageUI;
 
 /**
@@ -21,5 +22,9 @@ public class AdactinBookingConfirmationPage extends BasePage {
         return new AdactinViewBookingPage(driver, report, element);
     }
 
-
+    public AadactinLogoutPage verifyLogout() {
+        element.click(BookHotelPageUI.clickLogout);
+        logStepWithScreenShot(LogStatus.PASS, "Logout From Current Page", "Successfully logged out");
+        return new AadactinLogoutPage(driver, report, element);
+    }
 }

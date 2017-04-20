@@ -48,7 +48,20 @@ public class AdactinBookPage extends BasePage {
     }
 
     public AdactinBookPage verifyTotalPrice(String totalPrice) {
-        String totalPriceCalculated = element.getText();
+        String totalPriceCalculated = element.getText(BookHotelPageUI.totalPrice);
+        if (totalPriceCalculated.equalsIgnoreCase(totalPrice))
+            logStepWithScreenShot(LogStatus.PASS, "Totsl Price Should be AUD $ 250", "Toal Price(AUD $ 250) Successfully Calculated According to Test Data");
+        else
+            logStepWithScreenShot(LogStatus.FAIL, "Totsl Price Should be AUD $ 250", "Toal Price(AUD $ 250) Not Successfully Calculated According to Test Data");
+        return this;
+    }
+
+    public AdactinBookPage verifyTotalPriceWithGST(String finalPrice) {
+        String totalPriceCalculated = element.getText(BookHotelPageUI.totalPriceWithGST);
+        if (totalPriceCalculated.equalsIgnoreCase(finalPrice))
+            logStepWithScreenShot(LogStatus.PASS, "Final Price Should be AUD $ 275", "Final Price(AUD $ 275) Successfully Calculated by PricePerNight * NoofRooms * NoOfDays + 10% GST");
+        else
+            logStepWithScreenShot(LogStatus.FAIL, "Totsl Price Should be AUD $ 275", "Final Price(AUD $ 275) Not Successfully Calculated by PricePerNight * NoofRooms * NoOfDays + 10% GST");
         return this;
     }
 }

@@ -23,5 +23,16 @@ public class BookHotelPageUI {
     public static final By expiryYear = By.id("cc_exp_year");
     public static final By cvv = By.id("cc_cvv");
     public static final By clickBookNow = By.id("book_now");
+
+
+    /*logout*/
+    public static final By clickLogout = By.xpath("/html/body/table[2]/tbody/tr[1]/td[2]/a[4]");
+
+    /*Total Price*/
+    public static final By totalPrice = By.id("total_price_dis");
+    public static final By totalPriceWithGST = By.id("final_price_dis");
+
+
+
 }
 

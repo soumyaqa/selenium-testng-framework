@@ -18,4 +18,9 @@ public class SearchPageUI {
     public static final By adults = By.id("adult_room");
     public static final By children = By.id("child_room");
     public static final By search = By.id("Submit");
+
+    /*Error*/
+    public static final By errorMessage = By.id("checkout_span");
+
+
 }
