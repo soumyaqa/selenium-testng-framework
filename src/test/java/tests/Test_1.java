@@ -1,8 +1,6 @@
 package tests;
 
-import com.relevantcodes.extentreports.LogStatus;
 import framework.BaseTest;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import pages.GoogleHomePage;
 
@@ -15,6 +13,6 @@ public class Test_1 extends BaseTest {
     public void testGoogle() {
         homePage = new GoogleHomePage(driver, testReporter, element);
         openApplication("http://www.google.com");
-        homePage.search("testing framework");
+        homePage.search("testing ");
     }
 }
