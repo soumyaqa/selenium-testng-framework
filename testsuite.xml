@@ -2,8 +2,7 @@
 <suite name="SuiteName" parallel="classes" thread-count="10">
     <test name="TestName" allow-return-values="true" >
         <classes>
-            <class name="tests.Test_1" />
-            <class name="tests.Test_2"/>
+            <class name="testcases.LoginTest" />
         </classes>
     </test>
 </suite>

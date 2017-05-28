@@ -14,7 +14,7 @@ public class LoginTest extends BaseTest {
     public void verify_if_user_is_able_to_login_to_adactin_hotrl_application() {
         openApplication(configProperties.getProperty("app.url"));
         new LoginPage(driver, testReporter, element)
-                .login("home1234","root1234");
+                .login("home1234","root123");
 
     }
 }

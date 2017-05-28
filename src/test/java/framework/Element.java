@@ -6,8 +6,12 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.Wait;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -19,6 +23,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 public class Element {
 
     WebDriver driver;
+    Properties configProperties;
 
     public Element(WebDriver driver) {
         this.driver = driver;
@@ -248,7 +253,7 @@ public class Element {
         boolean isElementPresent = false;
         try {
             Wait<WebDriver> wait = new FluentWait<WebDriver>(driver)
-                    .withTimeout(30, SECONDS)
+                    .withTimeout(Long.parseLong(configProperties.getProperty("time.out.for.element")), SECONDS)
                     .pollingEvery(50, TimeUnit.MILLISECONDS)
                     .ignoring(WebDriverException.class, java.util.NoSuchElementException.class);
             //WebElement found = wait.until((arg0)->{return driver.findElement(by);});
@@ -270,6 +275,19 @@ public class Element {
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    private void loadConfig() {
+        //load configs
+        configProperties = new Properties();
+        try {
+            InputStream in = new FileInputStream("./config.properties");
+            configProperties.load(in);
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error loading config.properties");
         }
     }
 
