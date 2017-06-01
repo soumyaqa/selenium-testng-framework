@@ -9,7 +9,6 @@ import org.openqa.selenium.support.ui.Wait;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -251,13 +250,7 @@ public class Element {
                     .withTimeout(30, SECONDS)
                     .pollingEvery(50, TimeUnit.MILLISECONDS)
                     .ignoring(WebDriverException.class, java.util.NoSuchElementException.class);
-            //WebElement found = wait.until((arg0)->{return driver.findElement(by);});
-
-            WebElement foo = wait.until(new Function<WebDriver, WebElement>() {
-                public WebElement apply(WebDriver driver) {
-                    return driver.findElement(by);
-                }
-            });
+            wait.until(driver -> driver.findElement(by));
         } catch (Exception e) {
             return false;
         }
