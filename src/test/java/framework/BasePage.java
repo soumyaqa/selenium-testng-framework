@@ -7,9 +7,13 @@ import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
+import org.testng.Assert;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -17,15 +21,19 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 /**
  * Created by GXP8655 on 4/6/2017.
  */
+@SuppressWarnings("Duplicates")
 public class BasePage {
 
     protected WebDriver driver;
     protected ExtentTest report;
     protected Element element;
-    public BasePage (WebDriver driver, ExtentTest report, Element element){
+    protected Properties configProperties;
+
+    public BasePage(WebDriver driver, ExtentTest report, Element element) {
         this.driver = driver;
         this.report = report;
         this.element = element;
+        loadConfig();
     }
 
     public void logStep(LogStatus status, String expected, String actual) {
@@ -41,6 +49,23 @@ public class BasePage {
             e.printStackTrace();
         }
         report.log(status, expected, actual + report.addScreenCapture("./images/" + number + ".jpg"));
+    }
+
+    protected String getConfigProperty(String key) {
+        return configProperties.getProperty(key);
+    }
+
+    protected void loadConfig() {
+        //load configs
+        configProperties = new Properties();
+        try {
+            InputStream in = new FileInputStream("./config.properties");
+            configProperties.load(in);
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error loading config.properties");
+        }
     }
 
     //FLASH
@@ -97,7 +122,7 @@ public class BasePage {
         int rowCount;
         String value;
         String sIndex = "";
-        String skuGridProductEntry="skuDetailDataGrid"; //Project specific
+        String skuGridProductEntry = "skuDetailDataGrid"; //Project specific
         if (gridId.equalsIgnoreCase(skuGridProductEntry)) {
             rowCount = getGridRowCount(gridId);
             for (int i = 0; i < rowCount; i++) {
@@ -172,7 +197,7 @@ public class BasePage {
             }
         } catch (Exception e) {
             e.getMessage();
-            report.log(LogStatus.FAIL,"FlexWebDriver.click", "Error clicking " + objectId);
+            report.log(LogStatus.FAIL, "FlexWebDriver.click", "Error clicking " + objectId);
         }
     }
 
@@ -181,11 +206,11 @@ public class BasePage {
             if (waitForElement(objectId)) {
                 call("triggerMouseEvent", "click", objectId);
             } else {
-                report.log(LogStatus.FAIL,"FlexWebDriver.click", objectId + "not found or not visible");
+                report.log(LogStatus.FAIL, "FlexWebDriver.click", objectId + "not found or not visible");
             }
         } catch (Exception e) {
             e.getMessage();
-            report.log(LogStatus.FAIL,"FlexWebDriver.click", "Error clicking " + objectId);
+            report.log(LogStatus.FAIL, "FlexWebDriver.click", "Error clicking " + objectId);
         }
     }
 
@@ -497,7 +522,7 @@ public class BasePage {
                 return false;
             }
         } catch (Exception e) {
-            System.out.println("waitForElement " + elemId + " failed");
+            System.out.println("wait " + elemId + " failed");
             return false;
         }
     }
@@ -597,7 +622,7 @@ public class BasePage {
         if (waitUntilVisible(elementId)) {
             call("selectTabByLabel", elementId, labelName);
         } else {
-            report.log(LogStatus.FAIL,"FlexWebDriver.SelectTab", elementId + "not found or not visible");
+            report.log(LogStatus.FAIL, "FlexWebDriver.SelectTab", elementId + "not found or not visible");
         }
     }
 

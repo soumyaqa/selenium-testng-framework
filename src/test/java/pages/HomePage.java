@@ -18,7 +18,7 @@ public class HomePage extends BasePage {
         super(driver, report, element);
     }
 
-    public HomePage clickOnCreateQuote() {
+    public CustomerSearchPage clickOnCreateQuote() {
         boolean flag = false;
         try {
             //Click Create and Maintain Button
@@ -30,26 +30,23 @@ public class HomePage extends BasePage {
                 logStepWithScreenShot(LogStatus.FAIL, "System should display the Customer Profile screen", "System failed to display the Customer Profile screen");
                 Assert.fail("Error Loading customer search screen");
             } else
-                logStepWithScreenShot(LogStatus.PASS, "System should display the Customer Profile screen", "System failed to display the Customer Profile screen");
+                logStep(LogStatus.PASS, "System should display the Customer Profile screen", "Customer Search screen is displayed");
         } catch (Exception e) {
             e.printStackTrace();
             logStepWithScreenShot(LogStatus.FAIL, "Click on Create Quote button", "Customer Search screen is not displayed");
             Assert.fail("clickOnCreateQuote");
         }
-        logStepWithScreenShot(LogStatus.PASS, "Click on Create Quote button", "Customer Search screen is displayed");
-        return this;
+        return new CustomerSearchPage(driver,report, element);
     }
 
     private boolean VerifyCustomerProfileDisplayed() {
         try {
             String label = element.getText(CustomerSearchUI.custProfileLabel);
-            if (label.equals(CustomerSearchUI.label) && element.waitForElement(CustomerSearchUI.search)) {
-                logStepWithScreenShot(LogStatus.PASS, "System should display the Customer Profile screen", "System displays the Customer Profile screen successfully");
+            if (label.equals(CustomerSearchUI.label) && element.wait(CustomerSearchUI.search))
                 return true;
-            }
+            return false;
         } catch (Exception e) {
             return false;
         }
-        return false;
     }
 }

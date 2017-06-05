@@ -14,11 +14,12 @@ import uistore.LoginPageUI;
 public class ESVSLoginTest extends BaseTest {
 
     @Test
-    public void loginTest() {
-
-        openApplication("http://st5604.homedepot.com:12040/MMSVESVSWeb/main.html#");
+    public void createQuote() {
+        openApplication();
         LoginPage loginPage = new LoginPage(driver,  testReporter, element);
+        //Login Page will take care of opening the application
         loginPage.Login()
-                .clickOnCreateQuote();
+                .clickOnCreateQuote()
+                .searchCustomer();
     }
 }

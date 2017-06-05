@@ -17,6 +17,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.testng.Assert;
 import org.testng.annotations.*;
+import uistore.CustomerSearchUI;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -120,6 +121,18 @@ public class BaseTest {
             driver.get(appURL);
             driver.manage().window().maximize();
             logStepWithScreenShot(LogStatus.PASS, "Navigate to " + appURL, "Successfully navigated to " + appURL);
+        } catch (Exception e) {
+            logStepWithScreenShot(LogStatus.FAIL, "Navigate to " + appURL, "Failed to navigated to " + appURL);
+            Assert.fail();
+        }
+    }
+    public void openApplication() {
+        String appURL = "http://stXXXX.homedepot.com:12040/MMSVESVSWeb/main.html#";
+        appURL = appURL.replace("XXXX", configProperties.getProperty("storeNumber"));
+        try {
+            driver.get("http://st5604.homedepot.com:12040/MMSVESVSWeb/main.html#");
+            driver.manage().window().maximize();
+            logStep(LogStatus.PASS, "Navigate to : <br><a href = '" + appURL+ "'> "+appURL+"  </a>", "Successfully navigated to : <br><a href = '" + appURL+ "'>"+appURL+" </a>");
         } catch (Exception e) {
             logStepWithScreenShot(LogStatus.FAIL, "Navigate to " + appURL, "Failed to navigated to " + appURL);
             Assert.fail();
@@ -709,7 +722,7 @@ public class BaseTest {
                 return false;
             }
         } catch (Exception e) {
-            System.out.println("waitForElement " + elemId + " failed");
+            System.out.println("wait " + elemId + " failed");
             return false;
         }
     }

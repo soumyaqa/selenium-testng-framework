@@ -28,7 +28,7 @@ public class LoginPage extends BasePage {
             if (!waitUntilEnabled(HomePageUI.CreateQuoteButton))
                 logStepWithScreenShot(LogStatus.FAIL, "user will see ESVS home page", "ESVS home page is not displayed");
             else
-                logStepWithScreenShot(LogStatus.PASS, "user will see ESVS home page", "ESVS home page is displayed");
+                logStep(LogStatus.PASS, "user will see ESVS home page", "ESVS home page is displayed");
         } catch (Exception e) {
             element.acceptAlert();
             logStepWithScreenShot(LogStatus.FAIL, "Login", "Error Logging In");

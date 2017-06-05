@@ -29,7 +29,7 @@ public class Element {
      ***************************************************************************************************************/
 
     public boolean click(By by) {
-        if (waitForElement(by)) {
+        if (wait(by)) {
             driver.findElement(by).click();
             return true;
         }
@@ -41,7 +41,7 @@ public class Element {
      ***************************************************************************************************************/
 
     public boolean enterText(By by, String text) {
-        if (waitForElement(by)) {
+        if (wait(by)) {
             driver.findElement(by).sendKeys(text);
             return true;
         }
@@ -49,7 +49,7 @@ public class Element {
     }
 
     public boolean enterKeys(By by, Keys key) {
-        if (waitForElement(by)) {
+        if (wait(by)) {
             driver.findElement(by).sendKeys(key);
             return true;
         }
@@ -57,7 +57,7 @@ public class Element {
     }
 
     public boolean clear(By by) {
-        if (waitForElement(by)) {
+        if (wait(by)) {
             driver.findElement(by).clear();
             return true;
         }
@@ -68,7 +68,7 @@ public class Element {
      **********************************************DROP DOWN********************************************************
      ***************************************************************************************************************/
     public boolean selectByText(By by, String text) {
-        if (waitForElement(by)) {
+        if (wait(by)) {
             new Select(driver.findElement(by)).selectByVisibleText(text);
             return true;
         }
@@ -76,7 +76,7 @@ public class Element {
     }
 
     public boolean selectTextByIndex(By by, int index) {
-        if (waitForElement(by)) {
+        if (wait(by)) {
             new Select(driver.findElement(by)).selectByIndex(index);
             return true;
         }
@@ -84,7 +84,7 @@ public class Element {
     }
 
     public boolean selectTextByValue(By by, String value) {
-        if (waitForElement(by)) {
+        if (wait(by)) {
             new Select(driver.findElement(by)).selectByValue(value);
             return true;
         }
@@ -94,7 +94,7 @@ public class Element {
     public List<String> getAllOptions(By by) {
         List<WebElement> options = new ArrayList<>();
         List<String> values = new ArrayList<>();
-        if (waitForElement(by)) {
+        if (wait(by)) {
             Select select = new Select(driver.findElement(by));
             options = select.getOptions();
             for (WebElement element : options)
@@ -106,7 +106,7 @@ public class Element {
 
     public boolean isOptionPresent(By by, String option) {
         List<WebElement> options = new ArrayList<>();
-        if (waitForElement(by)) {
+        if (wait(by)) {
             Select select = new Select(driver.findElement(by));
             options = select.getOptions();
             for (WebElement element : options) {
@@ -119,7 +119,7 @@ public class Element {
 
     public boolean isOptionPresentIgnoreCase(By by, String option) {
         List<WebElement> options = new ArrayList<>();
-        if (waitForElement(by)) {
+        if (wait(by)) {
             Select select = new Select(driver.findElement(by));
             options = select.getOptions();
             for (WebElement element : options) {
@@ -182,7 +182,7 @@ public class Element {
      **********************************************ACTIONS********************************************************
      ***************************************************************************************************************/
     public boolean mouseOver(By by) {
-        if (waitForElement(by)) {
+        if (wait(by)) {
             new Actions(driver).moveToElement(driver.findElement(by)).build().perform();
             return true;
         }
@@ -190,7 +190,7 @@ public class Element {
     }
 
     public boolean doubleClick(By by) {
-        if (waitForElement(by)) {
+        if (wait(by)) {
             new Actions(driver).doubleClick(driver.findElement(by)).build().perform();
             return true;
         }
@@ -198,7 +198,7 @@ public class Element {
     }
 
     public boolean clickAndHold(By by) {
-        if (waitForElement(by)) {
+        if (wait(by)) {
             new Actions(driver).clickAndHold(driver.findElement(by)).build().perform();
             return true;
         }
@@ -206,7 +206,7 @@ public class Element {
     }
 
     public boolean dragAndDrop(By src, By dest) {
-        if (waitForElement(src) && waitForElement(dest)) {
+        if (wait(src) && wait(dest)) {
             new Actions(driver).dragAndDrop(driver.findElement(src), driver.findElement(dest)).build().perform();
             return true;
         }
@@ -224,7 +224,7 @@ public class Element {
      ***************************************************************************************************************/
     //TODO : Check getText for all UI elements like button, textbox, etc -- It may not work as expected
     public String getText(By by) {
-        if (waitForElement(by)) {
+        if (wait(by)) {
             String text = driver.findElement(by).getText();
             if (text == null || text.equalsIgnoreCase(""))
                 text = driver.findElement(by).getAttribute("value");
@@ -234,7 +234,7 @@ public class Element {
     }
 
     public boolean containsText(By by, String searchText) {
-        if (waitForElement(by)) {
+        if (wait(by)) {
             String text = driver.findElement(by).getText();
             if (text == null || text.equalsIgnoreCase(""))
                 text = driver.findElement(by).getAttribute("value");
@@ -243,11 +243,24 @@ public class Element {
         return false;
     }
 
-    public boolean waitForElement(By by) {
+    public boolean wait(By by) {
         boolean isElementPresent = false;
         try {
             Wait<WebDriver> wait = new FluentWait<WebDriver>(driver)
                     .withTimeout(30, SECONDS)
+                    .pollingEvery(50, TimeUnit.MILLISECONDS)
+                    .ignoring(WebDriverException.class, java.util.NoSuchElementException.class);
+            wait.until(driver -> driver.findElement(by));
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+    public boolean wait(By by, int seconds) {
+        boolean isElementPresent = false;
+        try {
+            Wait<WebDriver> wait = new FluentWait<WebDriver>(driver)
+                    .withTimeout(seconds, SECONDS)
                     .pollingEvery(50, TimeUnit.MILLISECONDS)
                     .ignoring(WebDriverException.class, java.util.NoSuchElementException.class);
             wait.until(driver -> driver.findElement(by));
