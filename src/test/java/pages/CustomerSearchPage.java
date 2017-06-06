@@ -32,8 +32,8 @@ public class CustomerSearchPage extends BasePage {
             //Click on Create Quote button shown against the first customer listed
             element.click(CustomerSearchUI.createOrder);
             driver.switchTo().defaultContent();
-            if (waitForElement(ProductEntryUI.orderNumber)) {
-                orderNumber = getText(ProductEntryUI.orderNumber);
+            if (element.waitForElement(ProductEntryUI.orderNumber)) {
+                orderNumber = element.getText(ProductEntryUI.orderNumber);
                 logStep(LogStatus.PASS, "Click 'Create Order' button", "Product Entry page is displayed");
                 logStep(LogStatus.PASS, "Order Number ",orderNumber );
             }

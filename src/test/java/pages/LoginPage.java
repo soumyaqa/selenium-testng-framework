@@ -25,7 +25,7 @@ public class LoginPage extends BasePage {
             element.enterText(LoginPageUI.userName, "stm001");
             element.enterText(LoginPageUI.password, "qa02Test!");
             element.click(LoginPageUI.signinButton);
-            if (!waitUntilEnabled(HomePageUI.CreateQuoteButton))
+            if (!element.waitUntilEnabled(HomePageUI.CreateQuoteButton))
                 logStepWithScreenShot(LogStatus.FAIL, "user will see ESVS home page", "ESVS home page is not displayed");
             else
                 logStep(LogStatus.PASS, "user will see ESVS home page", "ESVS home page is displayed");

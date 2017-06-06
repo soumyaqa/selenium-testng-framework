@@ -22,7 +22,7 @@ public class HomePage extends BasePage {
         boolean flag = false;
         try {
             //Click Create and Maintain Button
-            click(HomePageUI.CreateQuoteButton);
+            element.click(HomePageUI.CreateQuoteButton);
             //Switching from Flex to HTML
             driver.switchTo().frame(driver.findElement(CustomerSearchUI.frame));
             flag = VerifyCustomerProfileDisplayed();
