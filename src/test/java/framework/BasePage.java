@@ -9,20 +9,27 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * Created by GXP8655 on 4/6/2017.
  */
+@SuppressWarnings("Duplicates")
 public class BasePage {
 
     protected WebDriver driver;
     protected ExtentTest report;
     protected Element element;
-    public BasePage (WebDriver driver, ExtentTest report, Element element){
+    protected Properties configProperties;
+
+    public BasePage(WebDriver driver, ExtentTest report, Element element) {
         this.driver = driver;
         this.report = report;
         this.element = element;
+        loadConfig();
     }
 
     public void logStep(LogStatus status, String expected, String actual) {
@@ -39,4 +46,22 @@ public class BasePage {
         }
         report.log(status, expected, actual + report.addScreenCapture("./images/" + number + ".jpg"));
     }
+
+    protected String getConfigProperty(String key) {
+        return configProperties.getProperty(key);
+    }
+
+    protected void loadConfig() {
+        //load configs
+        configProperties = new Properties();
+        try {
+            InputStream in = new FileInputStream("./config.properties");
+            configProperties.load(in);
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error loading config.properties");
+        }
+    }
+
 }
