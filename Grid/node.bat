@@ -1,0 +1,1 @@
+java -jar selenium-server-standalone-3.6.0.jar -role node -browser browserName=chrome -hub http://localhost:4444/grid/register
